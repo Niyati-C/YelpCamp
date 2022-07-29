@@ -1,0 +1,22 @@
+<!-- this is a nice partial to spruce up our flash to make the flash messages look a bit nicer -->
+
+<!-- success is always going to be empty array so we dont want to display a bank green line if there is no success called yet -->
+<% if(success && success.length) { %> 
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%=success  %> 
+
+    <!-- a button to close the alert -->
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<% } %> 
+
+<!-- this is a errors flash message -->
+<% if(error && error.length) { %> 
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%=error  %> 
+    
+        <!-- a button to close the alert -->
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %> 
+    

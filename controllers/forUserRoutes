@@ -1,0 +1,64 @@
+//this is a file where all the functionality for users routes will be added.
+// like logging in an user etc. So the logic will be written here and just used in the routes directory
+
+//requiring our user mongoose model
+const User = require('../models/user');
+
+module.exports.renderRegisterForm = (req, res) => {
+    res.render('users/register');
+};
+
+module.exports.registerUser = async (req, res, next) => {
+    try {
+        const { email, username, password } = req.body;
+        const user = new User({ email, username });
+        //this takes the the entire instance of a user and it takes the password, 
+        //it hashes the password , store the salt and hash result on our new user.
+        const registeredUser = await User.register(user, password);
+
+        //after registering, we want to log the user in automatically than having them to log in again after registering
+        //passport.authenticate() middleware invokes req.login() automatically. This function is primarily used when users sign up,
+        //during which req.login() can be invoked to automatically log in the newly registered user.
+        req.login(registeredUser, err => {
+            if(err) return next(err);
+            req.flash('success', 'Welcome to Yelp Camp!');
+            res.redirect('/campgrounds');
+        })
+        
+        
+    } catch (e) {
+        req.flash('error', e.message);
+        res.redirect('register')
+    }
+
+};
+
+module.exports.renderLoginForm = (req, res) => {
+    res.render('users/login');
+
+};
+
+module.exports.loginUser =  (req, res) => {
+    //passport gives us a middleware that we have used, called passport.authenticate. It is going to expect us to specify the strategy local.
+    //we can also specify strategy google, twitter etc.
+    //failureFlash flashes a message automatically 
+    //failureRedirect will redirect us to that page if something goes wrong.
+    //if user is authentictaed successfully, it enters this code
+
+    //we want to redirect the user to a page he/she was trying to go to before we asked them to login before.
+    // so we want to send the user back to that same page after they log in
+    const redirectUrl = req.session.returnTo || '/campgrounds';
+    //then we want to delete that returnTo object from our session after being redirected
+    delete req.session.returnTo;
+
+    req.flash('success', 'Welcome Back!');
+    res.redirect(redirectUrl);
+
+
+};
+
+module.exports.logoutUser = (req, res) => {
+    req.logout();
+    req.flash('success', "Goodbye! Successfully logged out.");
+    res.redirect('/campgrounds');
+};

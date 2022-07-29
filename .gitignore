@@ -1,0 +1,3 @@
+# this file is for ignoring these files which means we dont want them to be pushed to heroku
+node_modules
+.env
