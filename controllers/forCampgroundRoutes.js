@@ -46,6 +46,11 @@ module.exports.CreatesNew = async(req,res) => {
     //campground[title], campground[price], campground[etc]
     const campground = new Campground(req.body.campground);
     //this is for storing lat and long
+    if(!geoData.body.features.length)
+     {
+       req.flash('error','No location found !!');
+       return res.redirect(`/campgrounds/${c._id}`);
+     }
     campground.geometry = geoData.body.features[0].geometry;
     //this is for image uploading using cloudinary
     campground.images = req.files.map(f => ({url: f.path, filename: f.filename}))
