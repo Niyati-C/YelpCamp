@@ -91,9 +91,14 @@ module.exports.renderEditForm = async (req,res) => {
 module.exports.editCampground = async(req,res) => {
     const {id} = req.params;
     //we first have to check if the author of the campground that we found, matches the cuurent logged in user
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+    }).send()
     const c = await Campground.findByIdAndUpdate(id, { ...req.body.campground});
     const images = req.files.map(f => ({url: f.path, filename: f.filename}))
     c.images.push(...images);
+    c.geometry = geoData.body.features[0].geometry;
     await c.save();
     //to delete selected images
     if(req.body.deleteImages){
