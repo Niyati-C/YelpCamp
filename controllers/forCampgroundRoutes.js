@@ -49,7 +49,7 @@ module.exports.CreatesNew = async(req,res) => {
     if(!geoData.body.features.length)
      {
        req.flash('error','No location found !!');
-       return res.redirect(`/campgrounds/${campground._id}`);
+       return res.redirect('/campgrounds/new');
      }
     campground.geometry = geoData.body.features[0].geometry;
     //this is for image uploading using cloudinary
