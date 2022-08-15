@@ -101,7 +101,7 @@ module.exports.editCampground = async(req,res) => {
     if(!geoData.body.features.length)
      {
        req.flash('error','No location found !!');
-       return res.redirect(`/campground/${c._id}`);
+       return res.redirect(`/campgrounds/${c._id}`);
      }
     c.geometry = geoData.body.features[0].geometry;
     await c.save();
