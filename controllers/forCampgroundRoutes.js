@@ -103,8 +103,7 @@ module.exports.editCampground = async(req,res) => {
     if(!geoData.body.features.length)
      {
        req.flash('error','No location found !!');
-       c.location = req.body.campground.location;
-       res.redirect('/campgrounds');
+       return res.redirect('/campgrounds');
      }
     const c = await Campground.findByIdAndUpdate(id, { ...req.body.campground});
     const images = req.files.map(f => ({url: f.path, filename: f.filename}))
