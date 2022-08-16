@@ -100,15 +100,16 @@ module.exports.editCampground = async(req,res) => {
         query: req.body.campground.location,
         limit: 1
     }).send()
-    const c = await Campground.findByIdAndUpdate(id, { ...req.body.campground});
-    const images = req.files.map(f => ({url: f.path, filename: f.filename}))
-    c.images.push(...images);
     if(!geoData.body.features.length)
      {
        req.flash('error','No location found !!');
        c.location = req.body.campground.location;
        res.redirect(`/campgrounds/${c._id}`);
      }
+    const c = await Campground.findByIdAndUpdate(id, { ...req.body.campground});
+    const images = req.files.map(f => ({url: f.path, filename: f.filename}))
+    c.images.push(...images);
+    
     c.geometry = geoData.body.features[0].geometry;
     await c.save();
     //to delete selected images
