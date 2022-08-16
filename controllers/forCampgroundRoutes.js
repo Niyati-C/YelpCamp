@@ -102,24 +102,29 @@ module.exports.editCampground = async(req,res) => {
     }).send()
     if(!geoData.body.features.length)
      {
-       req.flash('error','No location found !!');
-       res.redirect('back');
+        const c = await Campground.findById(id);
+        req.flash('error','Please enter a valid location!');
+        res.redirect(`/campgrounds/${c.id}/edit`);
      }
-    const c = await Campground.findByIdAndUpdate(id, { ...req.body.campground});
-    const images = req.files.map(f => ({url: f.path, filename: f.filename}))
-    c.images.push(...images);
-    
-    c.geometry = geoData.body.features[0].geometry;
-    await c.save();
-    //to delete selected images
-    if(req.body.deleteImages){
+    else{
+        const c = await Campground.findByIdAndUpdate(id, { ...req.body.campground});
+        const images = req.files.map(f => ({url: f.path, filename: f.filename}))
+        c.images.push(...images);
+
+        c.geometry = geoData.body.features[0].geometry;
+        await c.save();
+        //to delete selected images
+        if(req.body.deleteImages){
         for(let filename of req.body.deleteImages){
             await cloudinary.uploader.destroy(filename);
         }
         await c.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } });
-    }
-    req.flash('success', 'Successfully updated campground!');
-    res.redirect(`/campgrounds/${c.id}`);
+        }
+        req.flash('success', 'Successfully updated campground!');
+        res.redirect(`/campgrounds/${c.id}`);
+
+     }
+    
 };
 
 //delete campground
