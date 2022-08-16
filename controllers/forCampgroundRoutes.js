@@ -104,7 +104,7 @@ module.exports.editCampground = async(req,res) => {
      {
        req.flash('error','No location found !!');
        c.location = req.body.campground.location;
-       res.redirect(`/campgrounds/${c._id}`);
+       res.redirect('/campgrounds');
      }
     const c = await Campground.findByIdAndUpdate(id, { ...req.body.campground});
     const images = req.files.map(f => ({url: f.path, filename: f.filename}))
