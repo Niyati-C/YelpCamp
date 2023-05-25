@@ -62,6 +62,7 @@ const app = express();
 
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
+// thids path.join thing is to use our views folder from anywhere
 app.set('views', path.join(__dirname, 'views'));
 
 //this is to parse the body of any html form into actual data
